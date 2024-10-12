@@ -31,7 +31,7 @@ Initialize the contract:
 
 ```
 stellar contract invoke \                               
-  --id CAH5IECULUOR62DR7U6CKJZMMGJODO2UKCXT3NL3EWKFOCCDS4C4X43W \
+  --id CC7STMVOXVHTJRH5KJC2YOWXMJLSHDPBD5HMJYMDY2RK54BMPNY3WIOQ \
   --source piotrek \
   --network testnet \
   -- \
@@ -42,7 +42,7 @@ stellar contract invoke \
 
 ```
 stellar contract invoke \                               
-  --id CAH5IECULUOR62DR7U6CKJZMMGJODO2UKCXT3NL3EWKFOCCDS4C4X43W \
+  --id CC7STMVOXVHTJRH5KJC2YOWXMJLSHDPBD5HMJYMDY2RK54BMPNY3WIOQ \
   --source piotrek \
   --network testnet \
   -- mint --uri test --to piotrek --name test --description test
