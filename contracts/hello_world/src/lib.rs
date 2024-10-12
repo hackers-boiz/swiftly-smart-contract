@@ -21,21 +21,14 @@ pub enum DataKey {
 
 #[contractimpl]
 impl NFTContract {
-    pub fn initialize(env: Env, treasury: Address, base_uri: String, collection_name: Symbol) {
+    pub fn initialize(env: Env, base_uri: String, collection_name: Symbol) {
         env.storage().instance().set(&DataKey::Tokens, &Map::<u32, Address>::new(&env));
         env.storage().instance().set(&DataKey::TokenIdCounter, &0u32);
-        env.storage().instance().set(&DataKey::Treasury, &treasury);
         env.storage().instance().set(&DataKey::BaseURI, &base_uri);
         env.storage().instance().set(&DataKey::CollectionName, &collection_name);
     }
 
     pub fn mint_batch(env: Env, to: Address, count: u32) -> Vec<u32> {
-        let amount: i128 = (10 * count as i128) * 10_000_000; // 10 XLM per NFT in stroops
-        let client = token::Client::new(&env, &env.current_contract_address());
-        let treasury: Address = env.storage().instance().get(&DataKey::Treasury).unwrap();
-
-        client.transfer(&to, &treasury, &amount);
-
         let mut minted_tokens = Vec::new(&env);
 
         for _ in 0..count {
@@ -47,11 +40,6 @@ impl NFTContract {
     }
 
     pub fn mint(env: Env, to: Address) -> u32 {
-        // let amount: i128 = 10_0000000; // 10 XLM in stroops (1 XLM = 10,000,000 stroops)
-        // let client = token::Client::new(&env, &env.current_contract_address());
-        // let treasury: Address = env.storage().instance().get(&DataKey::Treasury).unwrap();
-        // client.transfer(&to, &treasury, &amount);
-
         let mut token_id = env.storage().instance().get::<_, u32>(&DataKey::TokenIdCounter).unwrap();
         token_id += 1;
 
