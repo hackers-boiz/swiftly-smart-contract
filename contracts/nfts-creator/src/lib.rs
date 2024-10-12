@@ -5,7 +5,7 @@ use soroban_sdk::{
 };
 
 #[contract]
-pub struct HelloContract;
+pub struct NFTContract;
 
 #[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -17,7 +17,7 @@ pub struct TokenMetadata {
 
 #[contracttype]
 pub enum DataKey {
-    Admin,
+    // Admin,
     Tokens,
     Metadata,
     TokenIdCounter,
@@ -25,25 +25,14 @@ pub enum DataKey {
 
 
 #[contractimpl]
-impl HelloContract {
-    pub fn initialize(env: Env, admin: Address) {
-        if env.storage().instance().has(&DataKey::Admin) {
-            panic!("already initialized");
-        }
-        env.storage().instance().set(&DataKey::Admin, &admin);
+impl NFTContract {
+    pub fn initialize(env: Env) {
         env.storage().instance().set(&DataKey::Tokens, &Map::<u32, Address>::new(&env));
         env.storage().instance().set(&DataKey::Metadata, &Map::<u32, TokenMetadata>::new(&env));
         env.storage().instance().set(&DataKey::TokenIdCounter, &0u32);
     }
 
-    pub fn admin(env: Env) -> Address {
-        env.storage().instance().get(&DataKey::Admin).unwrap()
-    }
-
     pub fn mint(env: Env, to: Address, name: Symbol, description: Symbol, uri: Symbol) -> u32 {
-        let admin = Self::admin(env.clone());
-        admin.require_auth();
-
         let mut token_id = env.storage().instance().get::<_, u32>(&DataKey::TokenIdCounter).unwrap();
         token_id += 1;
 
@@ -70,6 +59,10 @@ impl HelloContract {
     pub fn token_metadata(env: Env, token_id: u32) -> Option<TokenMetadata> {
         let metadata: Map<u32, TokenMetadata> = env.storage().instance().get(&DataKey::Metadata).unwrap();
         metadata.get(token_id)
+    }
+
+    pub fn total_nfts(env: Env) -> u32 {
+        env.storage().instance().get::<_, u32>(&DataKey::TokenIdCounter).unwrap_or(0)
     }
 }
 
